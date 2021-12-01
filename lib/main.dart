@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-void main() {
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+void main() async {
   runApp(const MyApp());
 }
 
@@ -32,6 +35,17 @@ class _MyHomePageState extends State<MyHomePage> {
   bool showSponsors = false;
   bool showPerformers = false;
   bool showSeatingPlan = false;
+  bool imageLoaded = false;
+  File? image;
+
+  Future imgFromGallery() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+    final imageTemp = File(image.path);
+    setState(() {
+      this.image = imageTemp;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -553,6 +567,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
+              //Image
+              image != null ? Image.file(image!) : Container(),
               //Buttons
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -568,7 +584,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           borderRadius: BorderRadius.circular(7),
                         ),
                         color: const Color.fromRGBO(134, 58, 235, 1),
-                        onPressed: () {},
+                        onPressed: () {
+                          imgFromGallery();
+                        },
                         child: const Padding(
                             padding: EdgeInsets.symmetric(
                               vertical: 20.0,
